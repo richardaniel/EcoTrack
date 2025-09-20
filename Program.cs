@@ -61,10 +61,15 @@ builder.Services.AddSwaggerGen(c =>
 });
 
 // ===== CORS (ajusta el origin de tu frontend si aplica) =====
-const string CorsPolicy = "CorsPolicy";
+const string CorsPolicy = "CorsPolicy";var allowedOrigins = new[]
+{
+    "http://localhost:3000",
+    "https://eco-tracknextjs.vercel.app", 
+    
+};
 builder.Services.AddCors(o => o.AddPolicy(CorsPolicy, p =>
 {
-    p.WithOrigins("http://localhost:5173")
+    p.WithOrigins(allowedOrigins)
      .AllowAnyHeader()
      .AllowAnyMethod();
 }));
