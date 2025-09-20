@@ -3,12 +3,12 @@
 # --- Runtime ---
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
 WORKDIR /app
-EXPOSE 8080  # local/dev; en Render se usará $PORT
+EXPOSE 8080
 
 # --- Build ---
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
-ARG PROJECT_PATH=Api/Api.csproj  # cambia a la ruta real de tu .csproj
+ARG PROJECT_PATH=Ecotrack_Api.csproj   # <--- en la raíz
 COPY . .
 RUN dotnet restore "$PROJECT_PATH"
 RUN dotnet publish "$PROJECT_PATH" -c Release -o /out \
@@ -20,6 +20,5 @@ RUN dotnet publish "$PROJECT_PATH" -c Release -o /out \
 FROM base AS final
 WORKDIR /app
 COPY --from=build /out .
-# Expande $PORT en runtime (Render lo define). Por defecto 8080 localmente.
-ENTRYPOINT ["sh","-c","ASPNETCORE_HTTP_PORTS=${PORT:-8080} dotnet app.dll"]
+ENTRYPOINT ["sh","-c","dotnet app.dll --urls http://0.0.0.0:${PORT:-8080}"]
 
